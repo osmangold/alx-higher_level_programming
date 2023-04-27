@@ -1,11 +1,9 @@
 #!/bin/bash
 
-url=$1
+# Send a request to the URL and store the response in a variable
+response=$(curl -sI "$1")
 
-response=$(curl -s -w "%{http_code} %{content_type}\n" "$url")
+# Extract the value of the Content-Length header from the response
+content_length=$(echo "$response" | grep -i "Content-Length" | awk '{print $2}')
 
-status_code=$(echo "$response" | awk '{print $1}')
-content_type=$(echo "$response" | awk '{print $2}')
-
-if [[ $status_code -eq 200 && $content_type == "text/html"* ]]; then
-  echo "$response" | sed '1d' | cat
+# Display the size of the body of the response in bytes
